@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class holdPiece : MonoBehaviour {
-    public GameObject GameLogic;
+    public GameLogic GameLogic;
     public GameObject raycastHolder;
     public GameObject player;
     public GameObject pieceBeingHeld;
@@ -26,31 +26,38 @@ public class holdPiece : MonoBehaviour {
             holdingPiece = true;
         }
     }
-	// Update is called once per frame
-	void Update () {
-        if (GameLogic.GetComponent<GameLogic>().playerTurn == true) {
-            if (holdingPiece == true) {
+	
+    private void FixedUpdate()
+    {
+        if (GameLogic.playerTurn)
+        {
+            if (holdingPiece)
+            {
                 Vector3 forwardDir = raycastHolder.transform.TransformDirection(Vector3.forward) * 100;
                 Debug.DrawRay(raycastHolder.transform.position, forwardDir, Color.green);
 
-
-                if (Physics.Raycast(raycastHolder.transform.position, (forwardDir), out hit)) {
-					gravityAttractor.transform.position = new Vector3(hit.point.x, hit.point.y + hoverHeight, hit.point.z);
-
-
-					pieceBeingHeld.GetComponent<Rigidbody> ().useGravity = false;
-					pieceBeingHeld.GetComponent<BoxCollider> ().enabled = false;
-
-					pieceBeingHeld.GetComponent<Rigidbody>().AddForce(gravityAttractor.transform.position - pieceBeingHeld.transform.position);
+                if (Physics.Raycast(raycastHolder.transform.position, (forwardDir), out hit))
+                {
+                    gravityAttractor.transform.position = new Vector3(hit.point.x, hit.point.y + hoverHeight, hit.point.z);
 
 
-                    if (hit.collider.gameObject.tag == "Grid Plate") {
-                        if (Input.GetMouseButtonDown(0)) {
+                    pieceBeingHeld.GetComponent<Rigidbody>().useGravity = false;
+                    pieceBeingHeld.GetComponent<BoxCollider>().enabled = false;
+
+                    //pieceBeingHeld.GetComponent<Rigidbody>().AddForce(gravityAttractor.transform.position - pieceBeingHeld.transform.position);
+                    pieceBeingHeld.transform.position = Vector3.Lerp(
+                        pieceBeingHeld.transform.position, gravityAttractor.transform.position, 1.0f * Time.deltaTime);
+
+
+                    if (hit.collider.gameObject.tag == "Grid Plate")
+                    {
+                        if (Input.GetMouseButtonDown(0))
+                        {
                             holdingPiece = false;
                             hit.collider.gameObject.SetActive(false);
                             pieceBeingHeld.GetComponent<PlayerPiece>().hasBeenPlayed = true;
-							pieceBeingHeld.GetComponent<Rigidbody> ().useGravity = true;
-							pieceBeingHeld.GetComponent<BoxCollider> ().enabled = true;
+                            pieceBeingHeld.GetComponent<Rigidbody>().useGravity = true;
+                            pieceBeingHeld.GetComponent<BoxCollider>().enabled = true;
                             GameLogic.GetComponent<GameLogic>().playerMove(hit.collider.gameObject);
                         }
 

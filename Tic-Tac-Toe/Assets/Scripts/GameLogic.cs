@@ -19,8 +19,6 @@ public class GameLogic : MonoBehaviour {
     public GameObject[] PlayerPieces;
     public GameObject[] AIPieces;
 
-
-
     public Vector3[] PlayerPiecePositions;
     public Vector3[] AIPiecePositions;
     public int AIMoveCount = 0;
@@ -48,9 +46,11 @@ public class GameLogic : MonoBehaviour {
     void Update() {
 
     }
+
     public void initBoard() {
         //Initialize our board array to be full of 'empty' 0s
         boardRepresentation = new int[9];
+
         for (int i = 0; i < 9; i++) {
             boardRepresentation[i] = 0;
             gridPlates[i].SetActive(true);
